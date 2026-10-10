@@ -102,7 +102,11 @@ def evaluate_candidates(training: pd.DataFrame, evaluation: pd.DataFrame, *, ran
         model.fit(x_train, y_train)
         fit_seconds = perf_counter() - start
         start = perf_counter()
-        prediction = model.predict(x_eval)
+        # Headcount is physically non-negative.  The unconstrained regression
+        # methods can otherwise produce a negative forecast near an empty room;
+        # applying this output constraint preserves the fitted model while
+        # returning forecasts in the valid engineering range.
+        prediction = np.maximum(model.predict(x_eval), 0.0)
         predict_seconds = perf_counter() - start
         results.append(ModelResult(name, model, regression_metrics(y_eval, prediction), fit_seconds, predict_seconds, prediction))
     return results

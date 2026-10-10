@@ -31,8 +31,8 @@ The pipeline does not turn a long sensor outage into zero people. It leaves the 
 
 | Model | MAE (people) | RMSE (people) | Bias (people) | Fit time (s) |
 | --- | ---: | ---: | ---: | ---: |
-| Ridge regression | 1.089 | 1.965 | -0.160 | 0.098 |
-| Support-vector regression | 1.134 | 2.110 | -0.400 | 11.232 |
+| Ridge regression | 1.080 | 1.966 | -0.158 | 0.039 |
+| Support-vector regression | 1.131 | 2.102 | -0.376 | 13.090 |
 | Decision-tree regression | 1.146 | 2.083 | -0.182 | 0.083 |
 | Persistence | 1.152 | 2.313 | 0.005 | 0.000 |
 | Weekday/time baseline | 1.452 | 2.528 | -0.565 | 0.014 |
@@ -44,9 +44,9 @@ Ridge regression was selected before examining the test period because it had th
 | Model | MAE (people) | RMSE (people) | Bias (people) | Fit time (s) |
 | --- | ---: | ---: | ---: | ---: |
 | Persistence | 0.461 | 0.944 | 0.009 | 0.000 |
-| Support-vector regression | 0.511 | 0.799 | 0.050 | 21.036 |
-| Ridge regression | 0.589 | 0.837 | 0.261 | 0.043 |
-| Decision-tree regression | 0.601 | 0.939 | 0.240 | 0.099 |
+| Support-vector regression | 0.507 | 0.794 | 0.047 | 21.889 |
+| Ridge regression | 0.579 | 0.837 | 0.272 | 0.035 |
+| Decision-tree regression | 0.591 | 0.911 | 0.225 | 0.097 |
 | Weekday/time baseline | 1.155 | 1.581 | 0.967 | 0.007 |
 
 Persistence unexpectedly has the lowest final-test MAE, while support-vector regression has the lowest final-test RMSE. This is a meaningful result: the occupancy pattern in the final period differs from development periods, and the selected ridge model tends to overpredict by 0.261 people. Do not change the selected model after seeing the test results. Instead, report this as a limitation and investigate the time-series plot and error distribution.

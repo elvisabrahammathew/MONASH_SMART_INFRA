@@ -7,7 +7,7 @@
 - [ ] `docs/`, including `docs/html/` and `docs/TEST_AND_VIEW.md`
 - [ ] `results/test-report.html` and `results/horizon_sensitivity.csv`
 - [ ] `report/MMA3001_Occupancy_Forecasting_Report.docx`
-- [ ] `presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx` and `presentation/DEMO_SCRIPT.md`
+- [ ] `presentation/MMA3001_Occupancy_Forecasting_Presentation_FINAL.pptx` and `presentation/DEMO_SCRIPT.md`
 - [ ] `scripts/build_report.py` (the report builder)
 
 ## Exclude from Git and the ZIP
@@ -15,6 +15,7 @@
 - [ ] `.venv/`, `.pip-tmp/`, `.pytest_cache/`, and `.ppt-build/`
 - [ ] `data/raw/` and `data/processed/` unless the teaching team has explicitly authorised data redistribution
 - [ ] `report/rendered/` and `*.pptx.inspect.ndjson` (local build checks)
+- [ ] `presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx` (superseded draft)
 
 ## Final verification
 

@@ -206,10 +206,13 @@ tempCodeRunnerFile.py
 # Project data: source archives and regenerated extracts stay local.
 data/raw/
 data/processed/
+.mplconfig/
 .pip-tmp/
 .ppt-build/
 report/rendered/
 *.pptx.inspect.ndjson
+# Superseded draft deck; submit the explicitly named FINAL deck instead.
+presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx
 
 # Ruff stuff:
 .ruff_cache/

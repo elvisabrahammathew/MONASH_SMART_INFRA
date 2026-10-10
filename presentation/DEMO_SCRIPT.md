@@ -47,11 +47,11 @@ Do not read code line by line. Explain the job of each file.
 
 Say:
 
-> I split the data chronologically: 60% training, 20% validation, and 20% final test. I never shuffled timestamps. Ridge regression had the best validation MAE, 1.089 people, and was selected before I looked at the final test period.
+> I split the data chronologically: 60% training, 20% validation, and 20% final test. I never shuffled timestamps. Ridge regression had the best validation MAE, 1.080 people, and was selected before I looked at the final test period.
 
 Then show the final-test table:
 
-> On the final test period, persistence had the best MAE at 0.461 people, while SVR had the lowest RMSE. The selected ridge model overpredicted by 0.261 people. This indicates that the room behaviour changed between development and the final period, so I report the limitation instead of claiming the complex model always wins.
+> On the final test period, persistence had the best MAE at 0.461 people, while SVR had the lowest RMSE. The selected ridge model overpredicted by 0.272 people. This indicates that the room behaviour changed between development and the final period, so I report the limitation instead of claiming the complex model always wins.
 
 ## Slide 5 — Verification, repository, and lessons (3:20-4:25)
 
@@ -59,7 +59,7 @@ Show GitHub, then HTML documentation and the test report.
 
 Say:
 
-> The repository separates reusable source code, tests, documentation, results, and local raw data. The raw archive is ignored by Git. Four automated tests currently verify resampling behaviour, future-target alignment, chronological splitting, and hand-calculated metrics. The HTML documentation is generated from source docstrings.
+> The repository separates reusable source code, tests, documentation, results, and local raw data. The raw archive is ignored by Git. Five automated tests verify resampling behaviour, future-target alignment, chronological splitting, hand-calculated metrics, and the synthetic end-to-end workflow. The HTML documentation is generated from source docstrings.
 
 > The main lesson is that a strong baseline can outperform a more complex model after operating conditions shift. Data quality and correct time-based validation were more important than adding more algorithms.
 
@@ -71,7 +71,7 @@ Say:
 
 End with:
 
-> The next step is a 15-, 30-, and 60-minute horizon sensitivity study and further investigation of errors around occupancy transitions and outages.
+> The sensitivity study shows that the best final-test MAE rises from 0.407 people at 15 minutes to 0.547 people at 60 minutes. The next engineering step is validation against manual counts and further investigation of transition errors and outages.
 
 ## Demonstration checklist
 
