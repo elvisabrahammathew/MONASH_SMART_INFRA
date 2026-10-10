@@ -203,6 +203,14 @@ cython_debug/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
+# Project data: source archives and regenerated extracts stay local.
+data/raw/
+data/processed/
+.pip-tmp/
+.ppt-build/
+report/rendered/
+*.pptx.inspect.ndjson
+
 # Ruff stuff:
 .ruff_cache/
 

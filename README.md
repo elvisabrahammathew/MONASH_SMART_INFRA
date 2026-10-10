@@ -2,54 +2,54 @@
 
 An individual Numerical Methods and Machine Learning project investigating how building sensor data can support short-term room occupancy forecasting and inform ventilation and HVAC scheduling.
 
-**Status: project planning.** This repository currently contains the project outline. The dataset has not been added, and the computational workflow, tests, and results have not yet been implemented. The research question below is provisional until the available data and project scope are confirmed.
+**Status: assessment-ready.** The raw data remain local and excluded from Git. The repository contains reproducible code, tests, generated documentation, a data audit, sensitivity results, report draft, and presentation deck.
 
 ## Engineering problem
 
 Room occupancy varies throughout the day. Forecasting these changes could help building operators anticipate ventilation demand and plan HVAC operation.
 
-This project will investigate whether historical occupancy measurements and available environmental sensor data can predict future occupancy more accurately than simple baseline methods. Its engineering contribution will be an evaluated forecasting method and an explanation of its accuracy, computational cost, and limitations.
+This project investigates whether historical occupancy measurements and calendar information can predict future occupancy more accurately than simple baseline methods. Its engineering contribution is an evaluated forecasting method and an explanation of its accuracy, computational cost, and limitations.
 
 The initial scope is occupancy prediction for one room. HVAC control and measured energy savings are outside the initial scope; they must not be inferred from forecasting accuracy alone.
 
 ## Research question
 
-> Can recent occupancy measurements and available environmental data predict room occupancy 15 minutes ahead more accurately than persistence and weekday/time baselines?
+> Can the occupant headcount in Building 60, room G.25 (Keenan Lab) be forecast 30 minutes ahead from recent headcount and calendar information more accurately than persistence and weekday/time baselines?
 
-The forecast horizon will be confirmed after inspecting the sampling interval, data coverage, and intended engineering use. At least one selected numerical or machine-learning method will be explicitly linked to material taught in MMA3001.
+The analysis aggregates state observations to 15-minute bins and explicitly filters the source data to 1 May-31 December 2024. Ridge regression, decision-tree regression, and support-vector regression are selected and compared using later validation observations. See [the runbook](docs/RUNBOOK.md) for exact commands.
 
 ## Dataset and LiDAR scope
 
 The proposed data source is the Monash Smart Infrastructure occupancy and environmental dataset described in the supplied Dataset 2 project information. The expected options are approximately one year of observations for a single room in the MSM Lab, or approximately one month of observations across Building 60. These are expected scopes, not confirmed contents of a received dataset.
 
-The intended project involves LiDAR-based occupancy sensing. However, the supplied dataset description does not confirm the sensor technology or whether raw LiDAR point clouds will be available. The current plan assumes timestamped occupancy measurements rather than raw point-cloud processing.
+The supplied data are timestamped occupancy-state and headcount observations rather than raw point clouds. The extracts do not document the sensing technology or provide independently observed ground truth, so this repository does not claim that the sensor is LiDAR or that its headcount is independently accurate.
 
 Before modelling, confirm:
 
 - The data release and access conditions; the supplied slide states that ethics clearance was pending.
 - Whether occupancy represents a person count, a binary occupied/unoccupied label, or another measurement.
-- Whether LiDAR supplies those measurements and how the measurements were validated.
+- How occupancy measurements were produced and whether independent validation is available.
 - The available environmental variables, units, room identifiers, and quality flags.
 - Timestamp timezone, sampling frequency, missing observations, and recording coverage.
 - Permissions for storing, sharing, and providing assessor access to the data.
 
 If only binary occupancy is provided, the problem and evaluation will be revised to classification. If the project instead uses raw LiDAR scans, its inputs, processing methods, and independent validation requirements will be revised before implementation.
 
-## Planned inputs and outputs
+## Inputs and outputs
 
 | Item | Proposed specification |
 | --- | --- |
 | Time | Timestamp with a documented timezone and sampling convention |
 | Location | Room or zone identifier; initially one selected room |
 | Occupancy | Historical measured person counts, subject to confirmation |
-| Environmental measurements | Only variables supplied in the dataset, with documented units |
+| Environmental measurements | Excluded from the main G.25 model until a co-located mapping is verified |
 | Forecast | Predicted occupancy count at a specified future timestamp |
 | Data-quality information | Flags identifying missing, stale, or unsupported inputs |
 | Evaluation outputs | Error metrics, baseline comparisons, runtime measurements, and figures |
 
-Exact file formats, column names, valid ranges, and units will be recorded in a data dictionary once the data are available. Missing sensor readings will not be treated as zero occupancy. Rules for duplicate timestamps, invalid counts, long outages, and unsupported inputs will be documented and tested.
+Exact file formats, column names, valid ranges, and units are documented in [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md). Missing sensor readings are never treated as zero occupancy. The pipeline documents duplicate timestamps, invalid counts, long outages, and unsupported inputs.
 
-## Planned computational workflow
+## Computational workflow
 
 1. **Audit the data:** inspect coverage, sampling intervals, missingness, unusual values, and occupancy patterns.
 2. **Define evaluation periods:** separate earlier development data from later validation and final test periods.
@@ -79,25 +79,12 @@ Sensitivity analysis will examine a manageable selection of forecast horizons, f
 
 ### Code verification
 
-Automated tests will check input validation, historical feature construction, future target alignment, chronological split boundaries, metric calculations against hand-worked examples, and execution of the complete workflow on a small sample.
-
-Tests and a generated test report are planned but are not yet available. Passing software tests will be reported separately from evidence of predictive accuracy.
+Automated tests check resampling behaviour, future-target alignment, chronological split boundaries, and metric calculations against hand-worked examples. The generated [test report](results/test-report.html) records the latest results. Passing software tests are reported separately from evidence of predictive accuracy.
 
 
 ## Setup and reproduction
 
-There is no executable pipeline or dependency file yet. Installation and execution instructions will be added alongside the first working implementation and checked from a fresh clone.
-
-The intended environment is Python, using libraries for numerical analysis, tabular data, plotting, machine learning, testing, and HTML documentation. Exact Python and package versions will be recorded after the environment is created and tested.
-
-The completed instructions will cover:
-
-1. Creating an isolated Python environment and installing the recorded dependencies.
-2. Obtaining authorised data and placing it in the expected local directory.
-3. Running preprocessing, baseline modelling, training, and evaluation.
-4. Running automated tests and generating the test report.
-5. Generating HTML source-code documentation.
-6. Reproducing the reported tables and figures.
+The executable pipeline is [src/occupancy/pipeline.py](src/occupancy/pipeline.py). Dependencies are recorded in `requirements.txt`; exact setup, execution, testing, and HTML-documentation commands are in [docs/RUNBOOK.md](docs/RUNBOOK.md).
 
 ## Data handling
 
@@ -107,7 +94,7 @@ The repository will document how an authorised assessor can obtain or access the
 
 ## Results and limitations
 
-**No experiments have been completed and no performance claims are made at this stage.**
+Initial results are recorded in [docs/INITIAL_RESULTS.md](docs/INITIAL_RESULTS.md). Ridge regression was selected from validation MAE, but persistence had a lower final-test MAE; this is reported as a distribution-shift limitation rather than hidden.
 
 Known limitations of the proposed scope include:
 
@@ -116,13 +103,13 @@ Known limitations of the proposed scope include:
 - Sensor outages, measurement error, and changing usage patterns may affect performance.
 - A useful occupancy forecast does not by itself demonstrate safe HVAC control or energy savings.
 
-The final results will include baseline comparisons, measured performance, failure cases, and an evidence-based explanation of the selected method.
+The final results include baseline comparisons, measured performance, a 15/30/60-minute sensitivity study, and an evidence-based explanation of the selected method. See [the sensitivity metrics](results/horizon_sensitivity.csv), [the report draft](report/MMA3001_Occupancy_Forecasting_Report.docx), and [the presentation deck](presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx).
 
 ## AI use and individual responsibility
 
-Codex was used to assist with interpreting the supplied project brief, proposing a provisional project scope and timeline, suggesting a repository structure, and drafting this README. These activities are planning and documentation assistance; they are not experimental evidence.
+Codex was used for project planning, code drafting, documentation, and presentation support. The current disclosure and student-completion prompts are in [docs/AI_USAGE.md](docs/AI_USAGE.md). These activities are not experimental evidence.
 
-The student remains responsible for the final question, implementation, verification, references, interpretation, and submitted claims. A detailed AI-use log will record the tool, purpose, approximate contribution, checks performed, rejected or corrected suggestions, and the effect on the student's understanding. Verification that has not yet been performed will not be claimed.
+The student remains responsible for the final question, implementation, verification, references, interpretation, and submitted claims. Verification that has not been performed will not be claimed.
 
 ## Assessment deliverables
 
@@ -139,4 +126,4 @@ Exact submission dates must be checked in the Unit Overview Spreadsheet. Student
 
 Project planning is based on `MMA3001_2026_Project_Brief.pdf` and the supplied **Project Information - Dataset 2** slide. These teaching materials are not included in this repository.
 
-A source-code licence has not yet been selected or added. Dataset permissions are separate from any future code licence.
+The source code is released under the [MIT License](LICENSE). Dataset permissions are separate and have not yet been confirmed.
