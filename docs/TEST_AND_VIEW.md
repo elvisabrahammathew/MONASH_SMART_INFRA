@@ -29,11 +29,12 @@ This takes time because it scans the 9-million-row archive. It writes an audit, 
 Import-Csv data\processed\g25_30min\metrics_validation.csv | Format-Table -AutoSize
 Import-Csv data\processed\g25_30min\metrics_final_test.csv | Format-Table -AutoSize
 Get-Content data\processed\g25_30min\audit.json
+Get-Content data\processed\g25_30min\availability_final_test.json
 Start-Process data\processed\g25_30min\figures\test_forecast_last_week.png
 Start-Process data\processed\g25_30min\figures\test_mae_comparison.png
 ```
 
-`metrics_validation.csv` selects a model without using final test data. `metrics_final_test.csv` is the untouched final comparison. The forecast plot shows observed and selected-model headcounts for the final week; the MAE plot compares all methods.
+`metrics_validation.csv` selects a model without using final test data. `metrics_final_test.csv` is the untouched final comparison. `availability_final_test.json` reports accuracy, precision, recall, and F1 for the selected model's available/not-available signal, using the 0.5-person threshold. The forecast plot shows observed and selected-model headcounts for the final week; the MAE plot compares all methods.
 
 ## 4. Recreate the horizon sensitivity study
 

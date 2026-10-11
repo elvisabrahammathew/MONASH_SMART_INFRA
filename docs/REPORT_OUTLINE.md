@@ -2,7 +2,7 @@
 
 Keep the main report to 5-10 pages. References and appendices do not count toward the limit.
 
-1. **Engineering problem and intended use** — occupancy forecasting for G.25; relevance to anticipatory ventilation/HVAC scheduling; scope and exclusions.
+1. **Engineering problem and intended use** — G.25 laboratory-availability forecasting for ad hoc booking, study-space allocation and room-readiness decisions; scope and exclusions.
 2. **Data, inputs, and outputs** — use `DATA_DICTIONARY.md`; show data coverage and quality issues.
 3. **Method** — 15-minute aggregation, 30-minute target, leakage-safe features, chronological split, model and baseline definitions.
 4. **Verification and validation** — unit tests, test report, source-data audit, chronological validation design, and metrics.

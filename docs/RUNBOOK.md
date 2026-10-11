@@ -4,11 +4,11 @@
 
 The current project asks:
 
-> Can the occupant headcount in Building 60, room G.25 (Keenan Lab) be forecast 30 minutes ahead from recent headcount and calendar information more accurately than persistence and a weekday/time baseline?
+> Can Building 60, room G.25 (Keenan Lab) availability 30 minutes ahead be inferred from headcount forecasts more reliably than persistence and a weekday/time baseline?
 
 The project uses a 15-minute analysis interval and restricts the supplied extract to 1 May-31 December 2024. The source archive names this period, but the raw records contain dates outside it, so the code filters the date range explicitly.
 
-This is a regression problem. The target is a non-negative person count. A forecast represents the expected count at the end of the 30-minute horizon; it is not a confirmed room booking, an HVAC control decision, or a measure of energy savings.
+This is a regression problem with an operational availability output. The target is a non-negative person count; a predicted count at or below 0.5 means available. The signal supports ad hoc room booking and study-space allocation; it is not a confirmed booking or access-control decision.
 
 ## Why this scope
 

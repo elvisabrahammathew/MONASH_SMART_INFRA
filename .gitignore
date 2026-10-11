@@ -213,6 +213,8 @@ report/rendered/
 *.pptx.inspect.ndjson
 # Superseded draft deck; submit the explicitly named FINAL deck instead.
 presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx
+presentation/MMA3001_Occupancy_Forecasting_Presentation_FINAL.pptx
+report/MMA3001_Occupancy_Forecasting_Report.docx
 
 # Ruff stuff:
 .ruff_cache/

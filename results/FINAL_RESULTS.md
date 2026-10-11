@@ -1,6 +1,6 @@
-# Final results: G.25 occupancy forecasting
+# Final results: G.25 laboratory availability forecasting
 
-This page is the presentation-ready interpretation of the reproducible metric files. It does **not** establish independent accuracy of the sensor; it measures agreement with later sensor-derived headcount records.
+This page is the presentation-ready interpretation of the reproducible metric files. A laboratory is considered available when sensor-derived headcount is 0.5 people or below. This does **not** establish confirmed booking availability or independent accuracy of the sensor.
 
 ## Main 30-minute forecast result
 
@@ -15,6 +15,20 @@ The model was selected using validation data only. Ridge regression had the lowe
 | Weekday/time baseline | 1.168 | 1.589 | 0.969 | Does not generalise well to the final period |
 
 **Accurate conclusion:** Ridge was selected fairly from validation, but persistence had the best final-test MAE. Do not claim that ridge is the best overall model. The final-period behaviour appears more stable than the development periods, making the current headcount a strong forecast.
+
+## Availability signal from the selected model
+
+The validation-selected ridge forecast was converted into an availability signal using the 0.5-person threshold.
+
+| Measure | Final-test value |
+| --- | ---: |
+| Availability accuracy | 64.6% |
+| Availability precision | 88.1% |
+| Availability recall | 53.8% |
+| Availability F1 score | 66.8% |
+| Final-test issue times | 3,968 |
+
+The high precision means that when the model says the lab is available, it is usually also sensor-recorded as available. The lower recall means it misses some genuinely available periods. This is appropriate for a cautious room-readiness indicator, but it is not sufficient to promise a room to a user without a booking-system or access-control check.
 
 ## Forecast-horizon sensitivity
 
@@ -38,4 +52,4 @@ The result is technically plausible: uncertainty increases as the forecast horiz
 2. Inspect `metrics_final_test.csv` second. It must show the final comparison once, without choosing a new winner afterwards.
 3. Confirm the time split in `audit.json` and that the pipeline uses only historical features.
 4. Run the five automated tests. These verify the software logic, not whether the sensor is independently correct.
-5. Report the limitations: one room, no manual ground truth, a 21.6-hour outage, and no validated environmental-sensor mapping.
+5. Report the limitations: one room, no manual ground truth, a 21.6-hour outage, no booking-system integration, and no validated environmental-sensor mapping.

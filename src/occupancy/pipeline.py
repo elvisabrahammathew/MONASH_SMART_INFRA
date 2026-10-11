@@ -1,4 +1,4 @@
-"""Command-line pipeline for leakage-safe room occupancy forecasting.
+"""Command-line pipeline for leakage-safe laboratory-availability forecasting.
 
 Example:
     python -m occupancy.pipeline --metadata "...\\Sensor ID and Locations.xlsx" ^
@@ -28,11 +28,11 @@ from .data import (
 )
 from .features import TARGET, build_feature_table, chronological_split
 from .metadata import load_sensor_metadata, resolve_room
-from .models import evaluate_candidates, metrics_frame
+from .models import availability_metrics, evaluate_candidates, metrics_frame
 
 
 def _parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Forecast one room's occupancy from historical sensor observations.")
+    parser = argparse.ArgumentParser(description="Forecast a laboratory's near-term availability from sensor observations.")
     parser.add_argument("--metadata", type=Path, required=True, help="Path to Sensor ID and Locations.xlsx")
     parser.add_argument("--occupancy-zip", type=Path, required=True, help="Path to the occupancy ZIP archive")
     parser.add_argument("--room", default="G.25", help="Mapped room label; default: G.25 (Keenan Lab)")
@@ -42,6 +42,7 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument("--frequency", default="15min", help="Regular aggregation interval; default: 15min")
     parser.add_argument("--horizon-minutes", type=int, default=30, help="Forecast horizon; default: 30 minutes")
     parser.add_argument("--max-carry", default="60min", help="Largest sensor outage treated as a held state")
+    parser.add_argument("--availability-threshold", type=float, default=0.5, help="Headcount at or below this value means available; default: 0.5")
     parser.add_argument("--environment-zip", type=Path, help="Optional environmental ZIP archive")
     parser.add_argument("--environment-sensor-id", help="Optional environmental sensor in the same room")
     parser.add_argument("--output-dir", type=Path, required=True, help="Local directory for regenerated results")
@@ -64,7 +65,7 @@ def _write_figure(predictions: pd.DataFrame, metrics: pd.DataFrame, destination:
     fig, axis = plt.subplots(figsize=(11, 4.5))
     axis.plot(recent.index, recent["actual"], label="observed headcount", color="#1f2937", linewidth=1.2)
     axis.plot(recent.index, recent["prediction"], label="selected forecast", color="#0f766e", linewidth=1.2)
-    axis.set(title="Final test-period forecasts", xlabel="Time", ylabel="People")
+    axis.set(title="Final test headcount forecasts supporting availability", xlabel="Time", ylabel="People")
     axis.legend()
     fig.autofmt_xdate()
     fig.tight_layout()
@@ -138,12 +139,23 @@ def main() -> None:
     test_metrics.to_csv(args.output_dir / "metrics_final_test.csv", index=False)
     selected_result = next(result for result in test_results if result.name == selected_name)
     predictions = pd.DataFrame(
-        {"actual": test[TARGET], "prediction": selected_result.prediction},
+        {
+            "actual_headcount": test[TARGET],
+            "forecast_headcount": selected_result.prediction,
+            "actual_available": test[TARGET] <= args.availability_threshold,
+            "forecast_available": selected_result.prediction <= args.availability_threshold,
+        },
         index=test.index,
     )
+    predictions["availability_correct"] = predictions["actual_available"] == predictions["forecast_available"]
     predictions.index.name = "timestamp"
     predictions.to_csv(args.output_dir / "predictions_final_test.csv")
-    _write_figure(predictions, test_metrics, figure_dir)
+    figure_predictions = predictions.rename(columns={"actual_headcount": "actual", "forecast_headcount": "prediction"})
+    _write_figure(figure_predictions, test_metrics, figure_dir)
+    availability = availability_metrics(test[TARGET], selected_result.prediction, threshold=args.availability_threshold)
+    availability.update({"selected_model": selected_name, "forecast_horizon_minutes": args.horizon_minutes, "test_rows": int(len(test))})
+    with (args.output_dir / "availability_final_test.json").open("w", encoding="utf-8") as file:
+        json.dump(availability, file, indent=2, default=_json_default)
 
     audit = occupancy_audit(events, occupancy)
     audit.update(
@@ -159,13 +171,14 @@ def main() -> None:
             "validation_rows": int(len(validation)),
             "test_rows": int(len(test)),
             "selected_on_validation": selected_name,
+            "availability_threshold_people": args.availability_threshold,
             "environment_note": environment_note,
             "available_environmental_mappings": int(environmental_metadata["sensorid"].nunique(dropna=True)),
         }
     )
     with (args.output_dir / "audit.json").open("w", encoding="utf-8") as file:
         json.dump(audit, file, indent=2, default=_json_default)
-    print(f"Completed occupancy forecast for {room_description}.")
+    print(f"Completed laboratory-availability forecast for {room_description}.")
     print(f"Selected by validation MAE: {selected_name}")
     print(f"Outputs written to: {args.output_dir}")
 

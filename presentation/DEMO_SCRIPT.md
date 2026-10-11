@@ -16,7 +16,7 @@ Keep raw data files closed. They are large and are not needed for the demonstrat
 
 Say:
 
-> My project predicts room occupancy 30 minutes ahead for Building 60, room G.25, the Keenan Lab. The intended use is to give building operators an early indication of likely occupancy for ventilation or HVAC planning. It does not directly control HVAC equipment or claim energy savings.
+> My project forecasts whether Building 60, room G.25, the Keenan Lab, will be available 30 minutes ahead. The intended use is to support ad hoc laboratory booking, study-space allocation, and room-readiness decisions. An available result means sensor-derived headcount is 0.5 people or below; it is not a confirmed booking.
 
 Show the research question, input, output, and chosen room.
 
@@ -32,7 +32,7 @@ Show the data-quality table. Explain that environmental measurements were exclud
 
 Say:
 
-> The code reads the large archive in chunks, filters to G.25, creates lagged occupancy and calendar features, then predicts headcount two 15-minute intervals ahead. I compared persistence and weekday/time baselines with ridge regression, a decision tree, and support-vector regression.
+> The code reads the large archive in chunks, filters to G.25, creates lagged occupancy and calendar features, then predicts headcount two 15-minute intervals ahead. It converts that count into an availability signal using a 0.5-person threshold. I compared persistence and weekday/time baselines with ridge regression, a decision tree, and support-vector regression.
 
 Demonstrate, briefly:
 
@@ -49,9 +49,11 @@ Say:
 
 > I split the data chronologically: 60% training, 20% validation, and 20% final test. I never shuffled timestamps. Ridge regression had the best validation MAE, 1.080 people, and was selected before I looked at the final test period.
 
-Then show the final-test table:
+Then show the final-test table and availability summary:
 
 > On the final test period, persistence had the best MAE at 0.461 people, while SVR had the lowest RMSE. The selected ridge model overpredicted by 0.272 people. This indicates that the room behaviour changed between development and the final period, so I report the limitation instead of claiming the complex model always wins.
+
+> The ridge availability signal was correct 64.6% of the time. When it indicated the lab was available, it was correct 88.1% of the time, but it detected only 53.8% of all available periods. I would use it as an advisory signal, not as a booking guarantee.
 
 ## Slide 5 — Verification, repository, and lessons (3:20-4:25)
 

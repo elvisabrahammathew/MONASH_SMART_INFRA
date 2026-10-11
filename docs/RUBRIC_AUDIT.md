@@ -10,7 +10,7 @@ This audit evaluates the current repository against the MMA3001 project brief. *
 | Validation and engineering credibility | Met | A chronological split, five automated tests, data audit, baseline comparison, final-test metrics and 15/30/60-minute sensitivity study are retained in `results/horizon_sensitivity.csv`. A fresh-clone run remains a final student check. |
 | Computational-method justification | Met | Persistence and weekday/time baselines are compared with ridge regression, decision-tree regression and SVR. The report explains method selection before testing and the final-period distribution shift. |
 | AI use and reflection | Met, pending personalisation | `docs/AI_USAGE.md` documents assistance and verification. Add a brief personal note only if it would make the record more accurate. Be able to explain the project unaided. |
-| Written report | Met | `report/MMA3001_Occupancy_Forecasting_Report.docx` is a submission-ready draft based on the reproducible results. Check your name, unit requirements and final pagination before upload. |
+| Written report | Met | `report/MMA3001_Laboratory_Availability_Report.docx` is a submission-ready draft based on the reproducible results. Check your name, unit requirements and final pagination before upload. |
 | Presentation and demonstration | Met | `presentation/MMA3001_Occupancy_Forecasting_Presentation.pptx` and `presentation/DEMO_SCRIPT.md` provide a six-slide, five-minute structure. Rehearse once and open the evidence pages before presenting. |
 | Submission administration | User action required | Confirm due dates, book the Week 14 presentation, make the repository accessible, push the final commit, and submit the report plus a zipped repository clone. |
 

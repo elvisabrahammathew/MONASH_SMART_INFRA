@@ -1,21 +1,24 @@
-# MMA3001 | Room Occupancy Forecasting
+# MMA3001 | Smart Laboratory Availability Forecasting
 
-This project forecasts sensor-derived headcount for **Building 60, room G.25 (Keenan Lab)**. It evaluates whether recent occupancy history and calendar information can predict headcount 30 minutes ahead for ventilation and HVAC planning.
+This project forecasts whether **Building 60, room G.25 (Keenan Lab)** will be available 30 minutes ahead. It converts sensor-derived headcount forecasts into a clear available/not-available signal to support ad hoc laboratory booking, study-space allocation, and room-readiness decisions.
+
+> The project supports planning only. An “available” signal means sensor-derived headcount is 0.5 people or below; it is not a confirmed booking, access-control decision, or independent occupancy audit.
 
 ## Question and approach
 
-**Question:** Can G.25 headcount be forecast 30 minutes ahead more accurately than simple persistence and weekday/time baselines?
+**Question:** Can G.25 availability 30 minutes ahead be inferred from a headcount forecast more reliably than simple persistence and weekday/time baselines?
 
 - **Data:** timestamped occupancy events, 1 May–31 December 2024.
 - **Preparation:** irregular events aggregated into 15-minute bins; values are carried forward for at most 60 minutes, then left missing.
 - **Features:** current and lagged headcount, rolling history, time of day, weekday, and weekend.
 - **Models:** persistence, weekday/time baseline, ridge regression, decision tree, and support-vector regression (SVR).
 - **Validation:** chronological 60% training / 20% validation / 20% final-test split. No timestamps are shuffled.
+- **Availability rule:** a future sensor-derived headcount of 0.5 people or below is treated as available.
 - **Environmental data:** excluded because no validated co-located G.25 sensor mapping was supplied.
 
 ## Results
 
-Ridge regression was selected from validation MAE (**1.080 people**) before the final test. On the untouched 30-minute final test period, persistence had the best MAE (**0.461 people**), while SVR had the lowest RMSE (**0.794 people**).
+Ridge regression was selected from validation MAE (**1.080 people**) before the final test. Its final headcount forecasts are translated into an availability signal. Persistence had the best 30-minute final-test MAE (**0.461 people**), while SVR had the lowest RMSE (**0.794 people**).
 
 | Forecast horizon | Best final-test MAE | Model |
 | --- | ---: | --- |
@@ -76,5 +79,18 @@ More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_A
 | `docs/` | Runbook, data dictionary, audit, AI disclosure, and HTML documentation |
 | `report/` | Submission-ready written report |
 | `presentation/` | Final slide deck and five-minute demonstration script |
+
+## Important limitations and data handling
+
+The results measure agreement with later **sensor-derived** observations, not confirmed bookings or independently observed occupancy. The analysis covers one room and contains a maximum source-data outage of 21.6 hours. Raw and processed data are excluded from Git because redistribution permission has not been confirmed.
+
+## Submission artifacts
+
+- [Written report](report/MMA3001_Laboratory_Availability_Report.docx)
+- [Final presentation deck](presentation/MMA3001_Laboratory_Availability_Presentation_FINAL.pptx)
+- [Presentation script](presentation/DEMO_SCRIPT.md)
+- [HTML code documentation](docs/html/index.html)
+- [Final submission checklist](SUBMISSION_CHECKLIST.md)
+- [AI-use disclosure](docs/AI_USAGE.md)
 
 Project code is released under the [MIT License](LICENSE). Dataset permissions are separate.
