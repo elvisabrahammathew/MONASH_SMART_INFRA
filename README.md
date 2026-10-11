@@ -2,8 +2,6 @@
 
 This project forecasts sensor-derived headcount for **Building 60, room G.25 (Keenan Lab)**. It evaluates whether recent occupancy history and calendar information can predict headcount 30 minutes ahead for ventilation and HVAC planning.
 
-> The project supports planning only. It does not control HVAC equipment, prove energy savings, or independently validate the occupancy sensor.
-
 ## Question and approach
 
 **Question:** Can G.25 headcount be forecast 30 minutes ahead more accurately than simple persistence and weekday/time baselines?
