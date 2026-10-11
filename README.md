@@ -79,17 +79,4 @@ More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_A
 | `report/` | Submission-ready written report |
 | `presentation/` | Final slide deck and five-minute demonstration script |
 
-## Important limitations and data handling
-
-The results measure agreement with later **sensor-derived** observations, not independently observed occupancy. The analysis covers one room and contains a maximum source-data outage of 21.6 hours. Raw and processed data are excluded from Git because redistribution permission has not been confirmed.
-
-## Submission artifacts
-
-- [Written report](report/MMA3001_Occupancy_Forecasting_Report.docx)
-- [Final presentation deck](presentation/MMA3001_Occupancy_Forecasting_Presentation_FINAL.pptx)
-- [Presentation script](presentation/DEMO_SCRIPT.md)
-- [HTML code documentation](docs/html/index.html)
-- [Final submission checklist](SUBMISSION_CHECKLIST.md)
-- [AI-use disclosure](docs/AI_USAGE.md)
-
 Project code is released under the [MIT License](LICENSE). Dataset permissions are separate.
