@@ -1,26 +1,21 @@
-# AI-use reflection log
+# AI-use disclosure and verification record
 
-## Current disclosure
+Codex was used to help interpret the project brief and supplied data structure, draft Python modules and documentation, organise the repository, generate presentation material, and identify consistency issues during review. AI assistance was used as drafting and planning support; it was not treated as experimental evidence.
 
-Codex was used for project planning, interpreting the supplied brief and data structure, proposing the focused G.25 forecasting question, drafting repository documentation, generating an initial Python implementation, and suggesting presentation material.
+## Verification performed
 
-The student remains responsible for the engineering question, all final code, data decisions, calculations, conclusions, citations, and presentation answers. AI output was checked by inspecting raw archive structure, executing the pipeline components on the supplied data, running automated tests, and reviewing generated metrics.
+| AI-assisted area | Verification and resulting decision |
+| --- | --- |
+| Problem scope | The supplied archive and metadata were inspected. The scope was narrowed to Building 60, room G.25 because it had a direct floor-space mapping. |
+| Environmental inputs | Sensor IDs and location metadata were checked. No verified co-located environmental mapping was found for G.25, so environmental features were excluded. |
+| Data preparation | The G.25 records were processed in chunks and audited for date coverage, gaps, headcount range and missing bins. The analysis explicitly filters May–December 2024. |
+| Leakage controls | Automated tests confirm future-target alignment and chronological splits. Features are limited to information available at forecast issue time. |
+| Model comparison | Persistence, weekday/time baseline, ridge regression, decision tree and SVR were evaluated on chronological validation and final-test periods. Ridge was selected from validation; persistence later had lower final-test MAE and this limitation is reported. |
+| Availability signal | The regression forecast is translated to advisory availability only when predicted headcount is less than or equal to 0.5 people. The final availability metrics are reported with the limitation that this is not a booking guarantee. |
+| Software quality | Six automated tests were run, the HTML test report was generated, and source-code documentation was regenerated from docstrings. |
 
-## Verification and corrections
+## Reflection on the role of AI
 
-| AI-assisted item | How it was checked | Correction or limitation identified |
-| --- | --- | --- |
-| Proposed occupancy/environment model | Compared sensor IDs and locations in the supplied workbook and archives | No verified environmental-to-G.25 mapping exists, so environmental features were excluded. |
-| Initial data processing | Loaded the G.25 source records in chunks and inspected dates, gaps, counts, and duplicate handling | The archive contains dates beyond its filename period, so the analysis explicitly filters May-December 2024. |
-| Forecast features | Tested future-target alignment and chronological split behaviour | Rows with missing current occupancy were excluded because persistence cannot forecast them. |
-| Model comparison | Ran ridge, decision tree, SVR, and baselines on chronologically later data | Ridge won validation MAE, but persistence had lower final-test MAE; this is reported as a limitation rather than hidden. |
+AI accelerated initial project scaffolding, code drafting and document organisation. The final project decisions were constrained by the supplied data: the lack of a verified environmental mapping prevented an environmental model, the 15-minute sampling interval motivated 15-, 30- and 60-minute horizons, and the 0.5-person rule made the continuous headcount forecast interpretable as an availability signal. The final-test result showed that the simple persistence baseline outperformed the validation-selected ridge model on MAE; this was retained as an engineering finding rather than adjusted away.
 
-## Student reflection to complete
-
-Before submitting, add dated entries explaining:
-
-1. Which code sections you read and can explain without assistance.
-2. Which AI suggestions you rejected, changed, or found unhelpful.
-3. Why you selected the final horizon and model from validation evidence.
-4. How this assistance affected your understanding of leakage, missing data, regression metrics, and reproducibility.
-5. Your approximate judgement of AI contribution to planning, code drafting, testing, and writing.
+The student remains responsible for the research question, all submitted code, method choices, calculations, evidence, claims, citations and presentation answers. The submitted interpretation is limited to agreement with later sensor-derived observations; it does not claim independent sensor validation, confirmed bookings, access-control decisions or energy savings.

@@ -51,5 +51,5 @@ The result is technically plausible: uncertainty increases as the forecast horiz
 1. Inspect `metrics_validation.csv` first. It must select the model without using the final test period.
 2. Inspect `metrics_final_test.csv` second. It must show the final comparison once, without choosing a new winner afterwards.
 3. Confirm the time split in `audit.json` and that the pipeline uses only historical features.
-4. Run the five automated tests. These verify the software logic, not whether the sensor is independently correct.
+4. Run the six automated tests. These verify the software logic, not whether the sensor is independently correct.
 5. Report the limitations: one room, no manual ground truth, a 21.6-hour outage, no booking-system integration, and no validated environmental-sensor mapping.

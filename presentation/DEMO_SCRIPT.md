@@ -61,7 +61,7 @@ Show GitHub, then HTML documentation and the test report.
 
 Say:
 
-> The repository separates reusable source code, tests, documentation, results, and local raw data. The raw archive is ignored by Git. Five automated tests verify resampling behaviour, future-target alignment, chronological splitting, hand-calculated metrics, and the synthetic end-to-end workflow. The HTML documentation is generated from source docstrings.
+> The repository separates reusable source code, tests, documentation, results, and local raw data. The raw archive is ignored by Git. Six automated tests verify resampling behaviour, future-target alignment, chronological splitting, hand-calculated regression metrics, availability-threshold metrics, and the synthetic end-to-end workflow. The HTML documentation is generated from source docstrings.
 
 > The main lesson is that a strong baseline can outperform a more complex model after operating conditions shift. Data quality and correct time-based validation were more important than adding more algorithms.
 

@@ -1,0 +1,155 @@
+{
+  "presentation": {
+    "title": "Smart Laboratory Availability Forecasting for Building 60, G.25",
+    "unit": "MMA3001 Numerical Methods and Machine Learning",
+    "student": "Elvis Abraham Mathew",
+    "duration_minutes": 5,
+    "question_time_minutes": 3,
+    "purpose": "Forecast whether the Keenan Lab will be available 30 minutes ahead, using sensor-derived headcount history, to support ad hoc laboratory booking, study-space allocation and room-readiness decisions.",
+    "core_claim": "The project provides a reproducible advisory availability signal. It does not confirm a booking, control access, prove energy savings or independently validate the occupancy sensor.",
+    "availability_rule": "A room is labelled available when predicted sensor-derived headcount is less than or equal to 0.5 people.",
+    "pre_presentation_setup": [
+      "Open MMA3001_Laboratory_Availability_Presentation_FINAL.pptx.",
+      "Open the GitHub repository home page with README.md visible.",
+      "Open results/test-report.html in a browser.",
+      "Open results/FINAL_RESULTS.md or the equivalent GitHub page.",
+      "Open results/figures/g25_30min_forecast_last_week.png and results/figures/g25_30min_mae_comparison.png.",
+      "Keep raw archives closed; they are large and are not needed for the demonstration."
+    ],
+    "slides": [
+      {
+        "number": 1,
+        "title": "Smart laboratory availability",
+        "time_seconds": "0:00-0:40",
+        "goal": "State the engineering problem, operational use and boundary of the project.",
+        "show": [
+          "Research question.",
+          "Building 60, room G.25, Keenan Lab.",
+          "Input: sensor-derived headcount history.",
+          "Output: available or not available in 30 minutes."
+        ],
+        "speaker_script": "My project forecasts whether Building 60, room G.25, the Keenan Lab, will be available 30 minutes ahead. The intended use is to support ad hoc laboratory booking, study-space allocation and room-readiness decisions. The system first forecasts sensor-derived headcount, then labels the room as available when the forecast is 0.5 people or below. This is an advisory signal only. It does not confirm a booking, control access or independently prove that the room is empty.",
+        "transition": "To make that signal credible, I first had to audit the sensor data rather than treating it as automatically clean."
+      },
+      {
+        "number": 2,
+        "title": "Data audit and quality controls",
+        "time_seconds": "0:40-1:20",
+        "goal": "Show that the data limitations were identified and handled transparently.",
+        "show": [
+          "643,290 G.25 occupancy events from 1 May to 31 December 2024.",
+          "15-minute analysis interval and 23,516 resampled bins.",
+          "Raw headcount range: 0 to 35 people.",
+          "Longest source-data outage: 21.6 hours.",
+          "Environmental variables excluded because no verified co-located G.25 mapping was supplied."
+        ],
+        "speaker_script": "I used 643,290 occupancy events for G.25 from May to December 2024. The source events are irregular, so I resampled them into 15-minute bins. I found a maximum outage of 21.6 hours. To avoid inventing occupancy during an outage, I carried the previous state forward for no more than one hour and then treated the value as missing. Missing data were never interpreted as an empty lab. I also excluded environmental variables because the supplied metadata did not confirm an environmental sensor in the same room.",
+        "transition": "After auditing the data, I built a forecasting method that uses only information available when a forecast would actually be issued."
+      },
+      {
+        "number": 3,
+        "title": "Leakage-safe forecasting workflow",
+        "time_seconds": "1:20-2:05",
+        "goal": "Explain the computational method and connect it to MMA3001 regression and validation topics.",
+        "show": [
+          "Chunk-read archive, filter G.25, resample to 15 minutes.",
+          "Features: current and lagged headcount, rolling history, time of day, weekday and weekend.",
+          "Target: headcount two 15-minute intervals later.",
+          "Models: persistence, weekday/time baseline, ridge regression, decision tree and SVR.",
+          "Chronological 60% train, 20% validation and 20% final test split."
+        ],
+        "speaker_script": "The code reads the large archive in chunks, filters the uniquely mapped G.25 space, and builds features from current and historical headcount. These include lags at 15, 30, 60 and 120 minutes, rolling statistics, time of day, weekday and weekend. The target is headcount 30 minutes later. The future target is never included as a feature, which prevents data leakage. I compared two simple baselines, persistence and weekday/time average, with ridge regression, decision-tree regression and support-vector regression. I preserved time order with a 60 percent training, 20 percent validation and 20 percent final-test split.",
+        "transition": "The validation period chooses the model. The final test period then challenges that choice on later observations."
+      },
+      {
+        "number": 4,
+        "title": "Validation, model comparison and availability output",
+        "time_seconds": "2:05-3:20",
+        "goal": "Present the results honestly and explain the availability metrics.",
+        "show": [
+          "Validation winner at 30 minutes: ridge regression, MAE 1.080 people.",
+          "Final-test best MAE: persistence, 0.461 people.",
+          "Final-test lowest RMSE: SVR, 0.794 people.",
+          "Selected ridge availability accuracy: 64.6 percent.",
+          "Availability precision: 88.1 percent; recall: 53.8 percent; F1: 66.8 percent."
+        ],
+        "speaker_script": "I selected ridge regression on validation data because it had the lowest 30-minute validation MAE of 1.080 people. I made that decision before seeing the final test period. On the final test, persistence achieved the best MAE at 0.461 people, while SVR achieved the lowest RMSE at 0.794 people. I did not change the selected model after seeing those results. Instead, I report that the final period was more stable than the development periods, so the simple baseline generalised better. Converting the selected ridge forecast to an availability signal gave 64.6 percent accuracy. Precision was 88.1 percent, so when it indicated availability it was usually correct. Recall was 53.8 percent, so it missed some genuinely available periods. This means the signal is appropriate as a cautious advisory indicator, not a booking guarantee.",
+        "transition": "I also tested whether this conclusion changes when the forecasting horizon changes."
+      },
+      {
+        "number": 5,
+        "title": "Sensitivity, verification and repository evidence",
+        "time_seconds": "3:20-4:25",
+        "goal": "Show sensitivity analysis, graphs, testing and reproducibility.",
+        "show": [
+          "15-minute persistence MAE: 0.407 people.",
+          "30-minute persistence MAE: 0.461 people.",
+          "60-minute persistence MAE: 0.547 people.",
+          "Forecast plot and final-test MAE comparison plot.",
+          "GitHub README, HTML documentation and six passing automated tests."
+        ],
+        "speaker_script": "The sensitivity study uses 15, 30 and 60-minute horizons. The best final-test MAE increased from 0.407 people at 15 minutes, to 0.461 at 30 minutes, and 0.547 at 60 minutes. This is expected because uncertainty grows as the forecast moves further into the future. I would use 30 minutes as the main operational horizon, with 15 minutes as the most accurate short-notice signal. The repository contains reusable source code, six automated tests, a generated HTML test report, HTML source-code documentation, a data audit and exact reproduction commands. The raw data are excluded from Git because redistribution permission has not been confirmed.",
+        "demonstration_actions": [
+          "Show README.md briefly to demonstrate the scope and reproduction commands.",
+          "Show results/test-report.html and point out the six passing tests.",
+          "Show results/figures/g25_30min_mae_comparison.png.",
+          "Show results/figures/g25_30min_forecast_last_week.png.",
+          "Show docs/html/index.html only if time permits."
+        ],
+        "transition": "The key result is useful, but the limits determine how it should and should not be used."
+      },
+      {
+        "number": 6,
+        "title": "Limitations, next step and responsible AI use",
+        "time_seconds": "4:25-5:00",
+        "goal": "Close with a defensible engineering interpretation and disclose AI assistance.",
+        "show": [
+          "One-room scope and no independent manual headcount ground truth.",
+          "21.6-hour outage and uncertain environmental mapping.",
+          "No booking-system or access-control integration.",
+          "Next step: compare predictions with bookings or manual counts across multiple rooms.",
+          "AI assistance was disclosed and outputs were checked."
+        ],
+        "speaker_script": "The main limitation is that this project measures agreement with later sensor-derived records, not independently observed occupancy or confirmed bookings. It covers one room and includes a long sensor outage. It also has no verified environmental mapping or booking-system integration. Therefore, the availability result should support a human or booking-system decision, not replace it. The next engineering step is to compare the signal against confirmed bookings and manual counts across multiple rooms. I used Codex for planning, implementation and documentation support, but I checked the data-processing choices, ran the code and tests, and remain responsible for the final method and conclusions.",
+        "closing_sentence": "The project shows that a transparent baseline and correct time-based validation can be more useful than a more complex model when developing a practical laboratory-availability indicator."
+      }
+    ],
+    "likely_questions": [
+      {
+        "question": "Why did persistence outperform ridge regression on the final test data?",
+        "answer": "Ridge was selected correctly using validation MAE. The final period appears more stable than the earlier development periods, so simply carrying forward current headcount worked especially well. I reported the shift rather than reselecting the model after seeing test data."
+      },
+      {
+        "question": "Why use a 0.5-person threshold?",
+        "answer": "The regression output is continuous, while the operational decision is binary. A threshold at or below 0.5 distinguishes an empty or effectively vacant sensor-derived count from an occupied room. It is explicit, reproducible and can be changed by an operator if policy requires a different threshold."
+      },
+      {
+        "question": "Does 88.1 percent precision mean users can rely on the lab being free?",
+        "answer": "No. Precision measures agreement with later sensor-derived labels, not confirmed bookings, access records or manual observations. The signal should advise a user or booking system, not guarantee a room."
+      },
+      {
+        "question": "Why did you not use environmental sensor data?",
+        "answer": "The supplied metadata did not establish a verified co-located environmental sensor for G.25. Joining data without a valid mapping would risk making unsupported claims, so I excluded it."
+      },
+      {
+        "question": "Why use chronological splitting instead of random splitting?",
+        "answer": "In real forecasting, only the past is available at issue time. Random splitting can leak future patterns into training and produces an unrealistic evaluation."
+      },
+      {
+        "question": "What do your six automated tests prove?",
+        "answer": "They verify specific software behaviour: resampling, target alignment, chronological splitting, regression metrics, availability-threshold metrics and the end-to-end workflow on synthetic data. They do not prove that the physical sensor is accurate."
+      },
+      {
+        "question": "Why are 15, 30 and 60 minutes suitable horizons?",
+        "answer": "The data are sampled at 15-minute intervals, so these are clean one-, two- and four-step horizons. Fifteen minutes supports immediate decisions, 30 minutes is the main booking horizon, and 60 minutes tests short planning."
+      }
+    ],
+    "phrases_to_avoid": [
+      "The model proves the laboratory is empty.",
+      "The model guarantees a booking or room access.",
+      "The project demonstrates energy savings.",
+      "Ridge is the best overall model.",
+      "The occupancy sensor has been independently validated."
+    ]
+  }
+}

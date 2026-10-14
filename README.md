@@ -48,7 +48,7 @@ python -m pytest --html=results\test-report.html --self-contained-html -q
 Start-Process results\test-report.html
 ```
 
-The latest run has **5 passing tests**. They verify resampling, target alignment, chronological splits, metric calculations, and a synthetic end-to-end workflow.
+The latest run has **6 passing tests**. They verify resampling, target alignment, chronological splits, regression metrics, availability-threshold metrics, and a synthetic end-to-end workflow.
 
 Recreate the 30-minute forecast outputs from the authorised local raw archives:
 

@@ -10,6 +10,7 @@
 | Analysis interval | 15 minutes |
 | Forecast horizon | 30 minutes (two analysis intervals) |
 | Target | `target_headcount`: observed headcount two intervals after the forecast issue time |
+| Availability rule | A room is advisory-available when sensor-derived headcount is less than or equal to 0.5 people. This is not a confirmed booking or access-control decision. |
 
 ## Raw occupancy archive
 
@@ -34,6 +35,9 @@
 | `occupancy_mean_previous_4`, `occupancy_std_previous_4` | Mean and standard deviation over the four earlier bins. |
 | `hour_sin`, `hour_cos` | Cyclic time-of-day representation. |
 | `weekday`, `weekend`, `time_bin` | Calendar predictors available when a forecast is issued. |
+| `actual_available` | `True` when the observed future sensor-derived headcount is less than or equal to 0.5 people. |
+| `forecast_available` | `True` when the selected model's forecast headcount is less than or equal to 0.5 people. |
+| `availability_correct` | `True` when `actual_available` and `forecast_available` agree. |
 
 ## Invalid and missing-data policy
 
