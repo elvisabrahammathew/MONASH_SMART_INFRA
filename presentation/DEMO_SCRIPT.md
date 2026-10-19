@@ -53,7 +53,7 @@ Then show the final-test table and availability summary:
 
 > On the final test period, persistence had the best MAE at 0.461 people, while SVR had the lowest RMSE. The selected ridge model overpredicted by 0.272 people. This indicates that the room behaviour changed between development and the final period, so I report the limitation instead of claiming the complex model always wins.
 
-> The ridge availability signal was correct 64.6% of the time. When it indicated the lab was available, it was correct 88.1% of the time, but it detected only 53.8% of all available periods. I would use it as an advisory signal, not as a booking guarantee.
+> The selected ridge availability signal was correct 64.6% of the time. When it indicated the lab was available, it was correct 88.1% of the time, but it detected only 53.8% of all available periods. In the model-by-model availability comparison, SVR had the best validation F1 and persistence had the strongest final-test F1, 80.4%. I report that final-test comparison without changing the pre-test ridge selection. I would use every result as an advisory signal, not as a booking guarantee.
 
 ## Slide 5 — Verification, repository, and lessons (3:20-4:25)
 
@@ -73,7 +73,7 @@ Say:
 
 End with:
 
-> The sensitivity study shows that the best final-test MAE rises from 0.407 people at 15 minutes to 0.547 people at 60 minutes. The next engineering step is validation against manual counts and further investigation of transition errors and outages.
+> The horizon sensitivity study shows that the best final-test MAE rises from 0.407 people at 15 minutes to 0.547 people at 60 minutes. The availability-threshold sensitivity check retains 0.5 people because it represents an empty room; a 1.0-person threshold improves F1 but changes the meaning by treating one person as available. The next engineering step is validation against manual counts and further investigation of transition errors and outages.
 
 ## Demonstration checklist
 
@@ -82,3 +82,4 @@ End with:
 - Be able to explain what each test proves and what it does not prove.
 - Have the final commands, metric CSVs, figures, test report, and HTML documentation already open.
 - Practise once with a five-minute timer. Stop at five minutes even if a slide remains.
+

@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import Ridge
-from sklearn.metrics import accuracy_score, f1_score, mean_absolute_error, mean_squared_error, precision_score, recall_score, r2_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, mean_absolute_error, mean_squared_error, precision_score, recall_score, r2_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
@@ -39,12 +39,17 @@ def availability_metrics(actual: pd.Series | np.ndarray, predicted: pd.Series | 
     """
     actual_available = np.asarray(actual, dtype=float) <= threshold
     forecast_available = np.asarray(predicted, dtype=float) <= threshold
+    confusion = confusion_matrix(actual_available, forecast_available, labels=[False, True])
     return {
         "availability_threshold_people": float(threshold),
         "availability_accuracy": float(accuracy_score(actual_available, forecast_available)),
         "availability_precision": float(precision_score(actual_available, forecast_available, zero_division=0)),
         "availability_recall": float(recall_score(actual_available, forecast_available, zero_division=0)),
         "availability_f1": float(f1_score(actual_available, forecast_available, zero_division=0)),
+        "true_unavailable": int(confusion[0, 0]),
+        "false_available": int(confusion[0, 1]),
+        "false_unavailable": int(confusion[1, 0]),
+        "true_available": int(confusion[1, 1]),
     }
 
 
@@ -136,3 +141,21 @@ def metrics_frame(results: list[ModelResult], *, period: str) -> pd.DataFrame:
     for result in results:
         rows.append({"period": period, "model": result.name, **result.metrics, "fit_seconds": result.fit_seconds, "predict_seconds": result.predict_seconds})
     return pd.DataFrame(rows).sort_values("mae_people").reset_index(drop=True)
+
+
+def availability_metrics_frame(
+    results: list[ModelResult], actual: pd.Series | np.ndarray, *, period: str, threshold: float = 0.5
+) -> pd.DataFrame:
+    """Compare every candidate model as an advisory availability indicator."""
+    rows = []
+    for result in results:
+        rows.append({"period": period, "model": result.name, **availability_metrics(actual, result.prediction, threshold=threshold)})
+    return pd.DataFrame(rows).sort_values(["availability_f1", "availability_precision"], ascending=False).reset_index(drop=True)
+
+
+def threshold_sensitivity_frame(
+    actual: pd.Series | np.ndarray, predicted: pd.Series | np.ndarray, *, period: str, thresholds: tuple[float, ...] = (0.0, 0.5, 1.0)
+) -> pd.DataFrame:
+    """Show how operational availability metrics change under stated thresholds."""
+    rows = [{"period": period, **availability_metrics(actual, predicted, threshold=threshold)} for threshold in thresholds]
+    return pd.DataFrame(rows)

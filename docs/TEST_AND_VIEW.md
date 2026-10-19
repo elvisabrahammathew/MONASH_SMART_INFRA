@@ -9,7 +9,7 @@ Run every command from the repository root in PowerShell.
 Start-Process results\test-report.html
 ```
 
-The command should report `5 passed`. The browser report records each test and its result.
+The command should report `6 passed`. The report records checks for resampling, target alignment, chronological splitting, regression metrics, availability-threshold metrics, and an end-to-end workflow.
 
 ## 2. Recreate the G.25 forecast outputs
 
@@ -21,20 +21,23 @@ The command should report `5 passed`. The browser report records each test and i
   --output-dir data\processed\g25_30min
 ```
 
-This takes time because it scans the 9-million-row archive. It writes an audit, prepared data, metrics, predictions, and two PNG figures to `data\processed\g25_30min`. Raw and processed data stay out of Git by design.
+The command scans the 9-million-row archive and writes an audit, prepared data, model metrics, predictions, and PNG figures. Raw and processed data stay out of Git by design.
 
-## 3. Display the outputs
+## 3. Display outputs and evaluate them
 
 ```powershell
 Import-Csv data\processed\g25_30min\metrics_validation.csv | Format-Table -AutoSize
 Import-Csv data\processed\g25_30min\metrics_final_test.csv | Format-Table -AutoSize
-Get-Content data\processed\g25_30min\audit.json
-Get-Content data\processed\g25_30min\availability_final_test.json
+Import-Csv data\processed\g25_30min\availability_metrics_validation.csv | Format-Table -AutoSize
+Import-Csv data\processed\g25_30min\availability_metrics_final_test.csv | Format-Table -AutoSize
+Import-Csv data\processed\g25_30min\availability_threshold_sensitivity.csv | Format-Table -AutoSize
 Start-Process data\processed\g25_30min\figures\test_forecast_last_week.png
 Start-Process data\processed\g25_30min\figures\test_mae_comparison.png
+Start-Process data\processed\g25_30min\figures\availability_f1_comparison.png
+Start-Process data\processed\g25_30min\figures\availability_confusion_matrix.png
 ```
 
-`metrics_validation.csv` selects a model without using final test data. `metrics_final_test.csv` is the untouched final comparison. `availability_final_test.json` reports accuracy, precision, recall, and F1 for the selected model's available/not-available signal, using the 0.5-person threshold. The forecast plot shows observed and selected-model headcounts for the final week; the MAE plot compares all methods.
+`metrics_validation.csv` selects the regression model without using final-test data. `metrics_final_test.csv` gives the final headcount comparison. The availability tables compare every method under the fixed 0.5-person rule. The threshold table shows what changes if “available” is defined differently; it is interpretation, not post-test model selection.
 
 ## 4. Recreate the horizon sensitivity study
 
@@ -45,8 +48,6 @@ Start-Process data\processed\g25_30min\figures\test_mae_comparison.png
 Import-Csv results\horizon_sensitivity.csv | Format-Table horizon_minutes,period,model,mae_people,rmse_people,bias_people,fit_seconds -AutoSize
 ```
 
-The command compares 15-, 30-, and 60-minute forecasts under the same chronological split and records both validation and final-test metrics. It uses the saved resampled data, so it does not reopen the large ZIP.
-
 ## 5. Regenerate code documentation
 
 ```powershell
@@ -56,4 +57,4 @@ Start-Process docs\html\index.html
 
 ## 6. Repeat from a fresh environment
 
-Follow [RUNBOOK.md](RUNBOOK.md) after cloning the repository. Do not commit the raw archives, processed CSV files, or virtual environment.
+Follow [RUNBOOK.md](RUNBOOK.md) after cloning. Do not commit the raw archives, processed CSV files, or virtual environment.

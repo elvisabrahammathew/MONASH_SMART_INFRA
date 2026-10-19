@@ -28,7 +28,7 @@ from .data import (
 )
 from .features import TARGET, build_feature_table, chronological_split
 from .metadata import load_sensor_metadata, resolve_room
-from .models import availability_metrics, evaluate_candidates, metrics_frame
+from .models import availability_metrics, availability_metrics_frame, evaluate_candidates, metrics_frame, threshold_sensitivity_frame
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -82,6 +82,42 @@ def _write_figure(predictions: pd.DataFrame, metrics: pd.DataFrame, destination:
     plt.close(fig)
 
 
+def _write_availability_figures(metrics: pd.DataFrame, selected: dict[str, float | int], destination: Path) -> None:
+    """Create report-ready availability-comparison and confusion-matrix figures."""
+    ordered = metrics.sort_values("availability_f1", ascending=True)
+    fig, axis = plt.subplots(figsize=(8, 4.5))
+    axis.barh(ordered["model"], ordered["availability_f1"], color="#0f766e")
+    axis.set(title="Final-test availability F1 by model", xlabel="F1 score", xlim=(0, 1))
+    fig.tight_layout()
+    fig.savefig(destination / "availability_f1_comparison.png", dpi=180)
+    plt.close(fig)
+
+    matrix = np.array(
+        [
+            [selected["true_unavailable"], selected["false_available"]],
+            [selected["false_unavailable"], selected["true_available"]],
+        ]
+    )
+    fig, axis = plt.subplots(figsize=(5.5, 4.5))
+    image = axis.imshow(matrix, cmap="YlGnBu")
+    axis.set(
+        title="Selected-model availability confusion matrix",
+        xlabel="Forecast availability",
+        ylabel="Observed availability",
+        xticks=[0, 1],
+        yticks=[0, 1],
+        xticklabels=["Unavailable", "Available"],
+        yticklabels=["Unavailable", "Available"],
+    )
+    for row in range(2):
+        for column in range(2):
+            axis.text(column, row, f"{matrix[row, column]:,}", ha="center", va="center", color="black", fontsize=14, fontweight="bold")
+    fig.colorbar(image, ax=axis, label="Forecast issue times")
+    fig.tight_layout()
+    fig.savefig(destination / "availability_confusion_matrix.png", dpi=180)
+    plt.close(fig)
+
+
 def main() -> None:
     """Extract a selected room, develop models, and save auditable outputs."""
     args = _parse_arguments()
@@ -131,12 +167,17 @@ def main() -> None:
     validation_results = evaluate_candidates(train, validation)
     validation_metrics = metrics_frame(validation_results, period="validation")
     validation_metrics.to_csv(args.output_dir / "metrics_validation.csv", index=False)
+    availability_metrics_frame(validation_results, validation[TARGET], period="validation", threshold=args.availability_threshold).to_csv(
+        args.output_dir / "availability_metrics_validation.csv", index=False
+    )
     selected_name = validation_metrics.iloc[0]["model"]
 
     development = pd.concat([train, validation])
     test_results = evaluate_candidates(development, test)
     test_metrics = metrics_frame(test_results, period="final_test")
     test_metrics.to_csv(args.output_dir / "metrics_final_test.csv", index=False)
+    test_availability = availability_metrics_frame(test_results, test[TARGET], period="final_test", threshold=args.availability_threshold)
+    test_availability.to_csv(args.output_dir / "availability_metrics_final_test.csv", index=False)
     selected_result = next(result for result in test_results if result.name == selected_name)
     predictions = pd.DataFrame(
         {
@@ -156,6 +197,15 @@ def main() -> None:
     availability.update({"selected_model": selected_name, "forecast_horizon_minutes": args.horizon_minutes, "test_rows": int(len(test))})
     with (args.output_dir / "availability_final_test.json").open("w", encoding="utf-8") as file:
         json.dump(availability, file, indent=2, default=_json_default)
+    thresholds = pd.concat(
+        [
+            threshold_sensitivity_frame(validation[TARGET], next(result for result in validation_results if result.name == selected_name).prediction, period="validation"),
+            threshold_sensitivity_frame(test[TARGET], selected_result.prediction, period="final_test"),
+        ],
+        ignore_index=True,
+    )
+    thresholds.to_csv(args.output_dir / "availability_threshold_sensitivity.csv", index=False)
+    _write_availability_figures(test_availability, availability, figure_dir)
 
     audit = occupancy_audit(events, occupancy)
     audit.update(

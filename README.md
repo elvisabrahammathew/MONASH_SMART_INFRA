@@ -28,7 +28,7 @@ Ridge regression was selected from validation MAE (**1.080 people**) before the 
 
 Error rises with forecast horizon. The final test period was more stable than development periods, so the simple persistence baseline generalised better than the validation-selected ridge model. This is reported as a result, not hidden.
 
-View the [full results and figures](results/FINAL_RESULTS.md), [sensitivity CSV](results/horizon_sensitivity.csv), and [data audit](docs/DATA_AUDIT.md).
+View the [full results and figures](results/FINAL_RESULTS.md), [availability model comparison](results/availability_metrics_final_test.csv), [threshold sensitivity](results/availability_threshold_sensitivity.csv), [horizon sensitivity](results/horizon_sensitivity.csv), and [data audit](docs/DATA_AUDIT.md).
 
 ## Run and test
 
@@ -64,7 +64,7 @@ Open the figures:
 
 ```powershell
 Start-Process results\figures\g25_30min_forecast_last_week.png
-Start-Process results\figures\g25_30min_mae_comparison.png
+Start-Process results\figures\g25_30min_mae_comparison.png`nStart-Process results\figures\availability_f1_comparison.png`nStart-Process results\figures\availability_confusion_matrix.png
 ```
 
 More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_AND_VIEW.md) and [docs/RUNBOOK.md](docs/RUNBOOK.md).
@@ -94,3 +94,4 @@ The results measure agreement with later **sensor-derived** observations, not co
 - [AI-use disclosure](docs/AI_USAGE.md)
 
 Project code is released under the [MIT License](LICENSE). Dataset permissions are separate.
+
