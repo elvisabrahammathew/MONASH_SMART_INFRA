@@ -14,7 +14,7 @@ Ridge regression had the lowest validation MAE (**1.080 people**) and was select
 | Decision tree | 0.591 | 0.911 | 0.225 |
 | Weekday/time baseline | 1.168 | 1.589 | 0.969 |
 
-Ridge was selected fairly from validation, but persistence had the lowest final-test MAE. The later period was more stable, so the current observed headcount was a strong predictor. This is reported rather than hidden.
+Ridge was selected fairly from validation, but persistence had the lowest final-test MAE. The later period was more stable, so the current observed headcount was a strong predictor. The final operational conclusion is therefore that persistence is the strongest tested 30-minute baseline for this test period, while ridge remains the pre-specified headcount model selected during validation.
 
 ## Availability model comparison
 

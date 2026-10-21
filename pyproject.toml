@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "monash-smart-infra"
 version = "0.1.0"
-description = "Reproducible occupancy forecasting workflow for MMA3001"
+description = "Reproducible laboratory availability forecasting workflow for MMA3001"
 requires-python = ">=3.11"
 
 [tool.setuptools]
@@ -20,4 +20,3 @@ pythonpath = ["src"]
 
 [tool.pdoc]
 docformat = "google"
-

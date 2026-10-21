@@ -64,7 +64,9 @@ Open the figures:
 
 ```powershell
 Start-Process results\figures\g25_30min_forecast_last_week.png
-Start-Process results\figures\g25_30min_mae_comparison.png`nStart-Process results\figures\availability_f1_comparison.png`nStart-Process results\figures\availability_confusion_matrix.png
+Start-Process results\figures\g25_30min_mae_comparison.png
+Start-Process results\figures\availability_f1_comparison.png
+Start-Process results\figures\availability_confusion_matrix.png
 ```
 
 More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_AND_VIEW.md) and [docs/RUNBOOK.md](docs/RUNBOOK.md).
@@ -94,4 +96,3 @@ The results measure agreement with later **sensor-derived** observations, not co
 - [AI-use disclosure](docs/AI_USAGE.md)
 
 Project code is released under the [MIT License](LICENSE). Dataset permissions are separate.
-

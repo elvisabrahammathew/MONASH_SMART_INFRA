@@ -53,7 +53,7 @@ Then show the final-test table and availability summary:
 
 > On the final test period, persistence had the best MAE at 0.461 people, while SVR had the lowest RMSE. The selected ridge model overpredicted by 0.272 people. This indicates that the room behaviour changed between development and the final period, so I report the limitation instead of claiming the complex model always wins.
 
-> The selected ridge availability signal was correct 64.6% of the time. When it indicated the lab was available, it was correct 88.1% of the time, but it detected only 53.8% of all available periods. In the model-by-model availability comparison, SVR had the best validation F1 and persistence had the strongest final-test F1, 80.4%. I report that final-test comparison without changing the pre-test ridge selection. I would use every result as an advisory signal, not as a booking guarantee.
+> Ridge was selected from validation MAE for the continuous headcount task. Its availability signal was correct 64.6% of the time, with 88.1% precision and 53.8% recall. In the separate availability comparison, SVR had the best validation F1 and persistence had the strongest final-test F1, 80.4%. Therefore, persistence is the strongest tested 30-minute availability baseline for the final period. I report this final-test result without retroactively changing the validation-stage ridge selection. These are advisory signals, not booking guarantees.
 
 ## Slide 5 — Verification, repository, and lessons (3:20-4:25)
 
@@ -82,4 +82,3 @@ End with:
 - Be able to explain what each test proves and what it does not prove.
 - Have the final commands, metric CSVs, figures, test report, and HTML documentation already open.
 - Practise once with a five-minute timer. Stop at five minutes even if a slide remains.
-

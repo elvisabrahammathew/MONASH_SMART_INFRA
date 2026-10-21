@@ -37,9 +37,18 @@
 | `weekday`, `weekend`, `time_bin` | Calendar predictors available when a forecast is issued. |
 | `actual_available` | `True` when the observed future sensor-derived headcount is less than or equal to 0.5 people. |
 | `forecast_available` | `True` when the selected model's forecast headcount is less than or equal to 0.5 people. |
-| `availability_correct` | `True` when `actual_available` and `forecast_available` agree. |`n| `true_unavailable`, `false_available`, `false_unavailable`, `true_available` | Counts in the availability confusion matrix, where `false_available` is the safety-relevant case in which the signal says available but the later sensor reading is occupied. |
+| `availability_correct` | `True` when `actual_available` and `forecast_available` agree. |
+| `true_unavailable`, `false_available`, `false_unavailable`, `true_available` | Counts in the availability confusion matrix, where `false_available` is the safety-relevant case in which the signal says available but the later sensor reading is occupied. |
 
-## Evaluation outputs`n`n| File | Meaning |`n| --- | --- |`n| `availability_metrics_validation.csv` | Model-by-model availability accuracy, precision, recall, F1, and confusion counts on validation data. |`n| `availability_metrics_final_test.csv` | The same comparison on the final chronological test period. |`n| `availability_threshold_sensitivity.csv` | Ridge availability metrics at stated thresholds of 0.0, 0.5, and 1.0 people; it does not change the selected model. |`n`n## Invalid and missing-data policy
+## Evaluation outputs
+
+| File | Meaning |
+| --- | --- |
+| `availability_metrics_validation.csv` | Model-by-model availability accuracy, precision, recall, F1, and confusion counts on validation data. |
+| `availability_metrics_final_test.csv` | The same comparison on the final chronological test period. |
+| `availability_threshold_sensitivity.csv` | Ridge availability metrics at stated thresholds of 0.0, 0.5, and 1.0 people; it does not change the selected model. |
+
+## Invalid and missing-data policy
 
 - A long sensor outage is not converted to zero people.
 - Forecast rows without current headcount are excluded, because persistence cannot issue a valid forecast.
@@ -50,4 +59,3 @@
 ## Environmental archive
 
 The archive contains JSON records for battery voltage, carbon dioxide, humidity, formaldehyde, pressure, temperature, light volatile organic compounds, and particulate matter. These variables are not included in the main G.25 model because the supplied metadata does not provide a confirmed co-located environmental sensor. If a verified mapping is provided, records are deduplicated by variable and timestamp, resampled to 15-minute bins, and only short internal gaps are interpolated.
-
