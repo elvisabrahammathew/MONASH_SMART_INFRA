@@ -24,9 +24,9 @@ def main() -> None:
     """Evaluate all candidate models for each requested forecast horizon."""
     args = _arguments()
     occupancy = pd.read_csv(args.occupancy, index_col="timestamp")
-    # CSV offsets differ across daylight-saving boundaries.  Converting to a
-    # shared UTC timeline preserves the 15-minute sequence for all horizons.
-    occupancy.index = pd.to_datetime(occupancy.index, utc=True)
+    # CSV offsets differ across daylight-saving boundaries. Parse them on a
+    # shared UTC timeline, then return to Melbourne time for calendar features.
+    occupancy.index = pd.to_datetime(occupancy.index, utc=True).tz_convert("Australia/Melbourne")
     rows: list[pd.DataFrame] = []
     for horizon in args.horizons:
         if horizon < args.frequency_minutes or horizon % args.frequency_minutes:
