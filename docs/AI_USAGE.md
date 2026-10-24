@@ -1,21 +1,25 @@
-# AI-use disclosure and verification record
+# AI-use reflection and verification record
 
-Codex was used to help interpret the project brief and supplied data structure, draft Python modules and documentation, organise the repository, generate presentation material, and identify consistency issues during review. AI assistance was used as drafting and planning support; it was not treated as experimental evidence.
+I used Codex as a support tool while completing this project. It helped me organise the repository, draft and explain parts of the Python code, interpret errors, and structure the documentation and presentation material. I did not treat AI output as evidence. I checked the project decisions against the supplied files, generated outputs, and automated tests before using them in the final project.
 
-## Verification performed
+## What I checked myself
 
-| AI-assisted area | Verification and resulting decision |
-| --- | --- |
-| Problem scope | The supplied archive and metadata were inspected. The scope was narrowed to Building 60, room G.25 because it had a direct floor-space mapping. |
-| Environmental inputs | Sensor IDs and location metadata were checked. No verified co-located environmental mapping was found for G.25, so environmental features were excluded. |
-| Data preparation | The G.25 records were processed in chunks and audited for date coverage, gaps, headcount range and missing bins. The analysis explicitly filters May–December 2024. |
-| Leakage controls | Automated tests confirm future-target alignment and chronological splits. Features are limited to information available at forecast issue time. |
-| Model comparison | Persistence, weekday/time baseline, ridge regression, decision tree and SVR were evaluated on chronological validation and final-test periods. Ridge was selected from validation; persistence later had lower final-test MAE and this limitation is reported. |
-| Availability signal | The regression forecast is translated to advisory availability only when predicted headcount is less than or equal to 0.5 people. The final availability metrics are reported with the limitation that this is not a booking guarantee. |
-| Software quality | Six automated tests were run, the HTML test report was generated, and source-code documentation was regenerated from docstrings. |
+I checked the sensor-location workbook and confirmed that Building 60, room G.25 had a usable occupancy-space mapping. I checked the analysis date range, the data audit, the forecast plots, model metric tables, and the automated test results. I also checked that the chronological train, validation, and final-test periods were used in that order, rather than randomly shuffling timestamps.
 
-## Reflection on the role of AI
+I selected 15, 30, and 60-minute forecast horizons because the data are represented in 15-minute bins. These horizons show the trade-off between short-term forecast accuracy and useful advance notice. I kept 30 minutes as the main project horizon because it gives a student or laboratory user enough time to decide whether to use the room, while still remaining close enough to the current sensor observation to be practical.
 
-AI  initial project scaffolding, code drafting and document organisation. The final project decisions were constrained by the supplied data: the lack of a verified environmental mapping prevented an environmental model, the 15-minute sampling interval motivated 15-, 30accelerated- and 60-minute horizons, and the 0.5-person rule made the continuous headcount forecast interpretable as an availability signal. The final-test result showed that the simple persistence baseline outperformed the validation-selected ridge model on MAE; this was retained as an engineering finding rather than adjusted away.
+The regression models predict a continuous headcount, so they can produce fractional values. I used a 0.5-person threshold to turn that forecast into an advisory availability signal: a predicted headcount of 0.5 or below represents an empty room. This does not mean the room is confirmed as bookable or accessible.
 
-I remains responsible for the research question, all submitted code, method choices, calculations, evidence, claims, citations and presentation answers. The submitted interpretation is limited to agreement with later sensor-derived observations; it does not claim independent sensor validation, confirmed bookings, access-control decisions or energy savings.
+## Decisions based on the results
+
+Ridge regression achieved the best validation MAE and was selected before the final test period was examined. On the final test period, persistence performed better. This means that using the current headcount as the next forecast generalised better when room behaviour changed in the later period. I kept this result in the project rather than changing the selection rule after seeing the final test results.
+
+I excluded environmental predictors from the final model. The supplied metadata did not prove that an environmental sensor was located in G.25, so combining those records with the occupancy data would have introduced an unsupported assumption.
+
+The project predicts later sensor-derived headcounts. It does not validate the occupancy sensor against manual observations, confirm room bookings, or prove that a user can access the room.
+
+## AI suggestions I checked or changed
+
+I did not accept the suggestion to include environmental measurements without a verified mapping to G.25. I also checked the timezone handling in the horizon-sensitivity script and accepted a correction that returns timestamps to Australia/Melbourne time before creating time-of-day and weekday features. I verified the correction by rerunning the sensitivity study and the automated tests.
+
+I remain responsible for the research question, code, calculations, evidence, interpretation, citations, and presentation. I can explain the purpose of each model, the validation design, the availability threshold, and the project limitations.
