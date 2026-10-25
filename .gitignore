@@ -233,3 +233,6 @@ __marimo__/
 # Microsoft Office temporary lock files
 ~$*.docx
 ~$*.pptx
+
+# Microsoft Word temporary recovery files
+~WRL*.tmp

@@ -14,7 +14,8 @@ This project forecasts whether **Building 60, room G.25 (Keenan Lab)** will be a
 - **Models:** persistence, weekday/time baseline, ridge regression, decision tree, and support-vector regression (SVR).
 - **Validation:** chronological 60% training / 20% validation / 20% final-test split. No timestamps are shuffled.
 - **Availability rule:** a future sensor-derived headcount of 0.5 people or below is treated as available.
-- **Mechanical-engineering relevance:** occupancy is an input to laboratory readiness and demand-responsive ventilation planning; this project does not claim to model HVAC control, thermal comfort, or energy savings.`r`n- **Environmental data:** excluded because no validated co-located G.25 sensor mapping was supplied.
+- **Mechanical-engineering relevance:** occupancy is an input to laboratory readiness and demand-responsive ventilation planning; this project does not claim to model HVAC control, thermal comfort, or energy savings.
+- **Environmental data:** excluded because no validated co-located G.25 sensor mapping was supplied.
 
 ## Results
 
@@ -69,7 +70,7 @@ Start-Process results\figures\availability_f1_comparison.png
 Start-Process results\figures\availability_confusion_matrix.png
 ```
 
-More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_AND_VIEW.md) and [docs/RUNBOOK.md](docs/RUNBOOK.md).
+Further execution instructions and output explanations are in [docs/RUNBOOK.md](docs/RUNBOOK.md).
 
 ## Repository contents
 
@@ -80,7 +81,6 @@ More commands and output explanations are in [docs/TEST_AND_VIEW.md](docs/TEST_A
 | `results/` | Test report, metric CSV, figures, and interpretation |
 | `docs/` | Runbook, data dictionary, audit, AI disclosure, and HTML documentation |
 | `report/` | Submission-ready written report |
-| `presentation/` | Final slide deck and five-minute demonstration script |
 
 ## Important limitations and data handling
 
@@ -89,10 +89,7 @@ The results measure agreement with later **sensor-derived** observations, not co
 ## Submission artifacts
 
 - [Written report](report/MMA3001_Laboratory_Availability_Report.docx)
-- [Final presentation deck](presentation/MMA3001_Laboratory_Availability_Presentation_FINAL.pptx)
-- [Presentation script](presentation/DEMO_SCRIPT.md)
 - [HTML code documentation](docs/html/index.html)
-- [Final submission checklist](SUBMISSION_CHECKLIST.md)
 - [AI-use disclosure](docs/AI_USAGE.md)
 
 Project code is released under the [MIT License](LICENSE). Dataset permissions are separate.
