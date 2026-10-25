@@ -1,12 +1,12 @@
 # MMA3001 | Smart Laboratory Availability Forecasting
 
-This project forecasts whether **Building 60, room G.25 (Keenan Lab)** will be available 30 minutes ahead. It converts sensor-derived headcount forecasts into a clear available/not-available signal to support ad hoc laboratory booking, study-space allocation, and room-readiness decisions.
+This project forecasts whether **Building 60, room G.25 (Keenan Lab)** will be available 30 minutes ahead. It converts sensor-derived headcount forecasts into a clear available/not-available signal for laboratory readiness and demand-responsive ventilation planning, while also supporting ad hoc laboratory use decisions.
 
 > The project supports planning only. An “available” signal means sensor-derived headcount is 0.5 people or below; it is not a confirmed booking, access-control decision, or independent occupancy audit.
 
 ## Question and approach
 
-**Question:** Can G.25 availability 30 minutes ahead be inferred from a headcount forecast more reliably than simple persistence and weekday/time baselines?
+**Engineering question:** Can G.25 availability 30 minutes ahead be inferred from a headcount forecast more reliably than simple persistence and weekday/time baselines, providing a cautious occupancy input for laboratory readiness and ventilation planning?
 
 - **Data:** timestamped occupancy events, 1 May–31 December 2024.
 - **Preparation:** irregular events aggregated into 15-minute bins; values are carried forward for at most 60 minutes, then left missing.
@@ -14,7 +14,7 @@ This project forecasts whether **Building 60, room G.25 (Keenan Lab)** will be a
 - **Models:** persistence, weekday/time baseline, ridge regression, decision tree, and support-vector regression (SVR).
 - **Validation:** chronological 60% training / 20% validation / 20% final-test split. No timestamps are shuffled.
 - **Availability rule:** a future sensor-derived headcount of 0.5 people or below is treated as available.
-- **Environmental data:** excluded because no validated co-located G.25 sensor mapping was supplied.
+- **Mechanical-engineering relevance:** occupancy is an input to laboratory readiness and demand-responsive ventilation planning; this project does not claim to model HVAC control, thermal comfort, or energy savings.`r`n- **Environmental data:** excluded because no validated co-located G.25 sensor mapping was supplied.
 
 ## Results
 

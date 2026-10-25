@@ -8,7 +8,7 @@
 | Occupancy space ID | `227f1068-9e41-469f-bef0-275f27a0bdba` |
 | Analysis period | 1 May-31 December 2024, Australia/Melbourne time |
 | Analysis interval | 15 minutes |
-| Forecast horizon | 30 minutes (two analysis intervals) |
+| Forecast horizon | 30 minutes (two analysis intervals) |`r`n| Engineering use | Cautious occupancy input for laboratory readiness and demand-responsive ventilation planning; it does not model HVAC controls, comfort, or energy savings. |
 | Target | `target_headcount`: observed headcount two intervals after the forecast issue time |
 | Availability rule | A room is advisory-available when sensor-derived headcount is less than or equal to 0.5 people. This is not a confirmed booking or access-control decision. |
 
